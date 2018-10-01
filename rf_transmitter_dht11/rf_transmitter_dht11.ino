@@ -5,11 +5,11 @@
 #define DHTPIN 13    
 #define DHTTYPE DHT11  
 
-float hum;
-float temp;
-String str_hum;
-String str_temp;
-String str_out;
+float humedad;
+float temperatura;
+String strHumedad;
+String strTemperatura;
+String strOut;
 
 RH_ASK rf_driver;
 DHT dht(DHTPIN, DHTTYPE);
@@ -20,20 +20,24 @@ void setup()
   dht.begin();
 }
 
-void loop()
-{
-  //espero a que el sensor establezca conexión
+void sendData(){
   delay(2000);
   //leo temperatura y humedad
-  hum = dht.readHumidity();
-  temp = dht.readTemperature();
+  humedad = dht.readHumidity();
+  temperatura = dht.readTemperature();
   //convierto los datos a str
-  str_hum = String(hum);
-  str_temp = String(temp);
+  strHumedad = String(humedad);
+  strTemperatura = String(temperatura);
   //construyo el string a enviar, separo datos con ,
-  str_out = str_hum + "," + str_temp;
-  
-  static char *msg = str_out.c_str();
+  strOut = strHumedad + "," + strTemperatura;
+  static char *msg = strOut.c_str();
+  delay(2000);
   rf_driver.send((uint8_t*)msg, strlen(msg));
   rf_driver.waitPacketSent();
+}
+
+void loop()
+{
+  sendData();
+  
 }
