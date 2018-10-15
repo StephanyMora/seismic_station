@@ -5,12 +5,16 @@
 #define DHTPIN 13    
 #define DHTTYPE DHT11  
 
-float humedad;
-float temperatura;
-String strHumedad;
-String strTemperatura;
-String strHello = "Hello";
-String strPrincess = "princess";
+float humidity;
+float temperature;
+long rawAx;
+int rawAy;
+int rawAz;
+String strHumidity;
+String strTemperature;
+String strAx;
+String strAy;
+String strAz;
 String strOut;
 
 RH_ASK rf_driver;
@@ -25,15 +29,20 @@ void setup()
 void sendData(){
   delay(2000);
   //leo temperatura y humedad
-  humedad = dht.readHumidity();
-  temperatura = dht.readTemperature();
+  humidity = dht.readHumidity();
+  temperature = dht.readTemperature();
   //convierto los datos a str
-  strHumedad = String(humedad);
-  strTemperatura = String(temperatura);
+  strHumidity = String(humidity);
+  strTemperature = String(temperature);
+  rawAx = random(-100,100);
+  rawAy = random(-100,100);
+  rawAz = random(-100,100);
+  strAx = String(rawAx);
+  strAy = String(rawAy);
+  strAz = String(rawAz);
   //construyo el string a enviar, separo datos con ,
-  strOut = strHumedad + "," + strTemperatura + "," + strHello + "," + strPrincess;
+  strOut = strHumidity + ',' + strTemperature + ',' + strAx + ',' + strAy + ',' + strAz;
   static char *msg = strOut.c_str();
-  delay(2000);
   rf_driver.send((uint8_t*)msg, strlen(msg));
   rf_driver.waitPacketSent();
 }
@@ -41,5 +50,4 @@ void sendData(){
 void loop()
 {
   sendData();
-  
 }
